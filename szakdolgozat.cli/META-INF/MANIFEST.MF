@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cli
+Bundle-SymbolicName: szakdolgozat.cli
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: szakdolgozat.cli
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Bundle: org.eclipse.core.runtime,
+ com.google.inject,
+ org.apache.commons.cli
+Bundle-ActivationPolicy: lazy

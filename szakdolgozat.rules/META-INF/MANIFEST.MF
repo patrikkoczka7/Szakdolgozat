@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rules
+Bundle-SymbolicName: szakdolgozat.rules
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: szakdolgozat.rules
+Bundle-RequiredExecutionEnvironment: JavaSE-17

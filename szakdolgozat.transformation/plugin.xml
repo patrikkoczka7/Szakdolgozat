@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="szakdolgozat.transformation.rules" name="szakdolgozat.transformation.rules" schema="schema/szakdolgozat.transformation.rules.exsd"/>
+   <extension
+         point="szakdolgozat.transformation.rules">
+      <rule_sets
+            rule_set="szakdolgozat.transformation.rules.priority0.BehaviorRules">
+      </rule_sets>
+      <rule_sets
+            rule_set="szakdolgozat.transformation.rules.priority0.ConnectorRules">
+      </rule_sets>
+   </extension>
+
+</plugin>
