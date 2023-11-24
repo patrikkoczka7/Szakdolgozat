@@ -2,12 +2,12 @@ package hu.bme.mit.sysml2autosar.queries
 
 import "http://www.eclipse.org/uml2/5.0.0/UML"
 
-pattern clientServerInterface(umlInterface: Interface){
+pattern clientServerInterfaceType(umlInterface: Interface){
 	Interface.name(umlInterface, umlName);
 	check(umlName.startsWith("csi_"));
 }
 
-pattern senderReceiverInterface(umlInterface: Interface){
+pattern senderReceiverInterfaceType(umlInterface: Interface){
 	Interface.name(umlInterface, umlName);	
 	check(umlName.startsWith("sri_"));
 }

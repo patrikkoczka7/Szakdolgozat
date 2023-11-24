@@ -15,5 +15,6 @@ Require-Bundle: org.eclipse.xtext.xbase.lib,
  hu.bme.mit.sysml2autosar.queries,
  org.artop.aal.autosar40
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.eclipse.uml2.uml
 Automatic-Module-Name: hu.bme.mit.sysml2autosar.transformation

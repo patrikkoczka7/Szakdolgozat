@@ -6,8 +6,8 @@
   </extension>
   <extension id="hu.bme.mit.sysml2autosar.queries.Patterns" point="org.eclipse.viatra.query.runtime.queryspecification">
     <group group="org.eclipse.viatra.query.runtime.extensibility.SingletonExtensionFactory:hu.bme.mit.sysml2autosar.queries.Patterns" id="hu.bme.mit.sysml2autosar.queries.Patterns">
-      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.clientServerInterface"/>
-      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.senderReceiverInterface"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.clientServerInterfaceType"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.senderReceiverInterfaceType"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.atomicSwComponentTypes"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.compositionSwComponentTypes"/>
     </group>
