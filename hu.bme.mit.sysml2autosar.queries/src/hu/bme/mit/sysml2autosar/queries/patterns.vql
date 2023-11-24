@@ -1,6 +1,7 @@
 package hu.bme.mit.sysml2autosar.queries
 
-import "http://www.eclipse.org/uml2/5.0.0/UML"
+import "http://www.eclipse.org/uml2/5.0.0/UML" as UML
+import "http://www.eclipse.org/papyrus/sysml/1.6/SysML/Blocks"
 
 pattern clientServerInterfaceType(umlInterface: Interface){
 	Interface.name(umlInterface, umlName);
@@ -12,9 +13,9 @@ pattern senderReceiverInterfaceType(umlInterface: Interface){
 	check(umlName.startsWith("sri_"));
 }
 
-pattern atomicSwComponentTypes(umlProperty: Property){
-	Property.name(umlProperty, umlName);
-	check(umlName.startsWith("aswct_"));
+pattern atomicSwComponentTypes(umlClass: UML::Class){
+	Block.base_Class(_, umlClass); // Has <<Block>> Stereotype defined
+	UML::Class.ownedPort(umlClass, _); // Has any port
 }
 
 pattern compositionSwComponentTypes(umlProperty: Property){
