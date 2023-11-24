@@ -3,12 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Queries
 Bundle-SymbolicName: hu.bme.mit.sysml2autosar.queries;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Export-Package: hu.bme.mit.sysml2autosar.queries
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.viatra.query.runtime,
  org.eclipse.viatra.query.runtime.rete,
  org.eclipse.viatra.query.runtime.localsearch,
  org.eclipse.xtext.xbase.lib,
- org.artop.aal.autosar40
-Automatic-Module-Name: hu.bme.mit.sysml2autosar.queries
+ org.artop.aal.autosar40,
+ org.eclipse.uml2.uml
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: org.apache.log4j
+Automatic-Module-Name: hu.bme.mit.sysml2autosar.queries

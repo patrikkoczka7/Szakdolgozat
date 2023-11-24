@@ -2,3 +2,23 @@ package hu.bme.mit.sysml2autosar.queries
 
 import "http://www.eclipse.org/uml2/5.0.0/UML"
 
+pattern clientServerInterface(umlInterface: Interface){
+	Interface.name(umlInterface, umlName);
+	check(umlName.startsWith("csi_"));
+}
+
+pattern senderReceiverInterface(umlInterface: Interface){
+	Interface.name(umlInterface, umlName);	
+	check(umlName.startsWith("sri_"));
+}
+
+pattern atomicSwComponentTypes(umlProperty: Property){
+	Property.name(umlProperty, umlName);
+	check(umlName.startsWith("aswct_"));
+}
+
+pattern compositionSwComponentTypes(umlProperty: Property){
+	Property.name(umlProperty, umlName);
+	check(umlName.startsWith("cswct_"));
+}
+

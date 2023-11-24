@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-<plugin>
-  <extension 
-  		id="application" 
-  		point="org.eclipse.core.runtime.applications">
-    <application 
-    	cardinality="singleton-global" 
-    	thread="main" 
-    	visible="true">
-      <run 
-      		class="hu.bme.mit.sysml2autosar.cli.Application">
-      </run>
+<?xml version="1.0" encoding="UTF-8"?><?eclipse version="3.4"?><plugin>
+  <extension id="application" point="org.eclipse.core.runtime.applications">
+    <application cardinality="singleton-global" thread="main" visible="true">
+      <run class="hu.bme.mit.sysml2autosar.cli.Application"/>
     </application>
+  </extension>
+  <extension id="hu.bme.mit.sysml2autosar.queries.Patterns" point="org.eclipse.viatra.query.runtime.queryspecification">
+    <group group="org.eclipse.viatra.query.runtime.extensibility.SingletonExtensionFactory:hu.bme.mit.sysml2autosar.queries.Patterns" id="hu.bme.mit.sysml2autosar.queries.Patterns">
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.clientServerInterface"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.senderReceiverInterface"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.atomicSwComponentTypes"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.compositionSwComponentTypes"/>
+    </group>
   </extension>
 </plugin>
