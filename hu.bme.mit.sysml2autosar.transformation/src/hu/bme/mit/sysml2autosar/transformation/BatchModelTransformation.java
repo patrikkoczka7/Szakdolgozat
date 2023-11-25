@@ -2,8 +2,7 @@ package hu.bme.mit.sysml2autosar.transformation;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.uml2.uml.Interface;
-import org.eclipse.uml2.uml.Property;
+import org.eclipse.uml2.uml.Class;
 import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine;
 import org.eclipse.viatra.query.runtime.emf.EMFScope;
 import org.eclipse.viatra.transformation.runtime.emf.modelmanipulation.IModelManipulations;
@@ -17,10 +16,13 @@ import autosar40.autosartoplevelstructure.AUTOSAR;
 import autosar40.autosartoplevelstructure.AutosartoplevelstructureFactory;
 import autosar40.genericstructure.generaltemplateclasses.arpackage.ARPackage;
 import autosar40.genericstructure.generaltemplateclasses.arpackage.ArpackageFactory;
-import autosar40.genericstructure.generaltemplateclasses.arpackage.PackageableElement;
 import autosar40.swcomponent.portinterface.ClientServerInterface;
-import autosar40.swcomponent.portinterface.SenderReceiverInterface;
 import autosar40.swcomponent.portinterface.PortinterfaceFactory;
+import autosar40.swcomponent.portinterface.SenderReceiverInterface;
+import autosar40.swcomponent.components.AtomicSwComponentType;
+import autosar40.swcomponent.components.ComponentsFactory;
+import autosar40.swcomponent.composition.CompositionFactory;
+import autosar40.swcomponent.composition.CompositionSwComponentType;
 import hu.bme.mit.sysml2autosar.queries.AtomicSwComponentTypes;
 import hu.bme.mit.sysml2autosar.queries.ClientServerInterfaceType;
 import hu.bme.mit.sysml2autosar.queries.CompositionSwComponentTypes;
@@ -47,10 +49,38 @@ public class BatchModelTransformation {
 	protected ViatraQueryEngine engine;
 	protected ResourceSet umlResourceSet;
 	protected Resource autosarResource;
-	protected BatchTransformationRule<?, ?> clientServerInterfaceRule;
-	protected BatchTransformationRule<?, ?> serverReceiverInterfaceRule;
-	protected BatchTransformationRule<?, ?> atomicSwComponentTypesRule;
-	protected BatchTransformationRule<?, ?> compositionSwComponentTypesRule;
+	
+	protected BatchTransformationRule<?, ?> clientServerInterfaceRule = batchTransformationRuleFactory.createRule(ClientServerInterfaceType.instance()).name("ClientServerInterfaceRule").action(match -> {
+		Class csi = match.getUmlClass();
+		String csi_name = csi.getName();
+		ClientServerInterface autosarInterface = PortinterfaceFactory.eINSTANCE.createClientServerInterface();
+		autosarInterface.setShortName(csi_name);
+		portInterfaces.getElements().add(autosarInterface);
+	}).build();
+	
+	protected BatchTransformationRule<?, ?> senderReceiverInterfaceRule = batchTransformationRuleFactory.createRule(SenderReceiverInterfaceType.instance()).name("SenderReceiverInterfaceRule").action(match -> {
+		Class sri = match.getUmlClass();
+		String sri_name = sri.getName();
+		SenderReceiverInterface autosarInterface = PortinterfaceFactory.eINSTANCE.createSenderReceiverInterface();
+		autosarInterface.setShortName(sri_name);
+		portInterfaces.getElements().add(autosarInterface);
+	}).build();
+	
+	protected BatchTransformationRule<?, ?> atomicSwComponentTypesRule = batchTransformationRuleFactory.createRule(AtomicSwComponentTypes.instance()).name("AtomicSwComponentTypesRule").action(match -> {
+		Class aswct = match.getUmlClass();
+		String aswct_name = aswct.getName();
+		AtomicSwComponentType autosarAswct = ComponentsFactory.eINSTANCE.createApplicationSwComponentType();
+		autosarAswct.setShortName(aswct_name);
+		portInterfaces.getElements().add(autosarAswct);
+	}).build();
+	
+	protected BatchTransformationRule<?, ?> compositionSwComponentTypesRule = batchTransformationRuleFactory.createRule(CompositionSwComponentTypes.instance()).name("CompositionSwComponentTypesRule").action(match -> {
+		Class cswct = match.getUmlClass();
+		String cswct_name = cswct.getName();
+		CompositionSwComponentType autosarCswct = CompositionFactory.eINSTANCE.createCompositionSwComponentType();
+		autosarCswct.setShortName(cswct_name);
+		portInterfaces.getElements().add(autosarCswct);
+	}).build();
 
 	public BatchModelTransformation(ResourceSet umlResourceSet, Resource autosarResource) {
 		this.umlResourceSet = umlResourceSet;
@@ -82,10 +112,10 @@ public class BatchModelTransformation {
 		swComponentTypes.getArPackages().add(atomicSwComponentTypes);
 		compositionSwComponentTypes	.setShortName("CompositionSwComponentTypes");	
 		swComponentTypes.getArPackages().add(compositionSwComponentTypes);
-		getClientServerInterfaceRule();
-		getSenderReceiverInterfaceRule();
-		getAtomicSwComponentTypesRule();
-		getCompositionSwComponentTypesRule();
+		statements.fireAllCurrent(clientServerInterfaceRule);
+		statements.fireAllCurrent(senderReceiverInterfaceRule);
+		statements.fireAllCurrent(atomicSwComponentTypesRule);
+		statements.fireAllCurrent(compositionSwComponentTypesRule);
 	}
 
 	private void createTransformation() {
@@ -95,38 +125,6 @@ public class BatchModelTransformation {
 		transformation = BatchTransformation.forEngine(engine).build();
 		// Initialize batch transformation statements
 		statements = transformation.getTransformationStatements();
-	}
-	
-	private void getClientServerInterfaceRule() {
-		batchTransformationRuleFactory.createRule(ClientServerInterfaceType.instance()).name("ClientServerInterfaceRule").action(match -> {
-			Interface csi = match.getUmlInterface();
-			String csi_name = csi.getName();
-			ClientServerInterface autosarInterface = PortinterfaceFactory.eINSTANCE.createClientServerInterface();
-			autosarInterface.setShortName(csi_name);
-			portInterfaces.getElements().add(autosarInterface);
-		}).build();
-	}
-	
-	private void getSenderReceiverInterfaceRule() {
-		batchTransformationRuleFactory.createRule(SenderReceiverInterfaceType.instance()).name("SenderReceiverInterfaceRule").action(match -> {
-			Interface sri = match.getUmlInterface();
-			String sri_name = sri.getName();
-			SenderReceiverInterface autosarInterface = PortinterfaceFactory.eINSTANCE.createSenderReceiverInterface();
-			autosarInterface.setShortName(sri_name);
-			portInterfaces.getElements().add(autosarInterface);
-		}).build();
-	}
-	
-	private void getAtomicSwComponentTypesRule() {
-		batchTransformationRuleFactory.createRule(AtomicSwComponentTypes.instance()).name("AtomicSwComponentTypesRule").action(match -> {
-			Property aswct = match.getUmlProperty();
-		}).build();
-	}
-	
-	private void getCompositionSwComponentTypesRule() {
-		batchTransformationRuleFactory.createRule(CompositionSwComponentTypes.instance()).name("CompositionSwComponentTypesRule").action(match -> {
-			Property cswct = match.getUmlProperty();
-		}).build();
 	}
 
 //  private def getExampleRule() {

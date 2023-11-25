@@ -15,5 +15,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.artop.aal.autosar451.services,
  org.eclipse.emf.ecore,
  hu.bme.mit.sysml2autosar.transformation,
- org.eclipse.uml2.uml
+ org.eclipse.uml2.uml,
+ org.eclipse.uml2.uml.resources
 Bundle-ActivationPolicy: lazy

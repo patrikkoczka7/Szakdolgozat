@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.equinox.app.IApplication;
+import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
 
 import hu.bme.mit.sysml2autosar.transformation.BatchModelTransformation;
 
@@ -55,7 +56,8 @@ public class ApplicationStarter {
      */
 	private void readPapyrusModel(String umlFileUri) {
 		umlResourceSet = new ResourceSetImpl();
-		//UMLUtil.init(resourceSet);
+		//UMLUtil.init(umlResourceSet);
+		UMLResourcesUtil.init(umlResourceSet);
 		URI inputModelFile = URI.createFileURI(umlFileUri);
 		umlResource = umlResourceSet.getResource(inputModelFile, true);		
 	}
