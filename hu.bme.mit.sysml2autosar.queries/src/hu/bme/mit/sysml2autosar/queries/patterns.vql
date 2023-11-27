@@ -4,30 +4,101 @@ import "http://www.eclipse.org/uml2/5.0.0/UML" as UML
 import "http://www.eclipse.org/papyrus/sysml/1.6/SysML/Blocks"
 import "http://www.eclipse.org/papyrus/sysml/1.6/SysML/PortsAndFlows"
 
+//Working
+pattern applicationDataType(umlDataType: UML::DataType){
+	DataType(umlDataType);
+	DataType.name(umlDataType, umlName);
+	check(umlName.startsWith("apdt_"));
+}
+
+//Working
 pattern clientServerInterfaceType(umlClass: UML::Class){
 	InterfaceBlock.base_Class(_, umlClass);
-	Class.name(umlClass, umlName);
-	check(umlName.startsWith("csi_"));
+	Class.ownedOperation(umlClass, _);
 }
 
+//Working
 pattern senderReceiverInterfaceType(umlClass: UML::Class){
 	InterfaceBlock.base_Class(_, umlClass);
-	Class.name(umlClass, umlName);
-	check(umlName.startsWith("sri_"));
+	Class.ownedAttribute(umlClass, _);
 }
 
-pattern atomicSwComponentTypes(umlClass: UML::Class){
+//Working
+pattern atomicSwComponentTypes(umlProperty: UML::Property){
 	Block.base_Class(_, umlClass); // Has <<Block>> Stereotype defined
-	Class.name(umlClass, umlName);
-	Class.ownedAttribute(umlClass, _);
-	//UML::Class.ownedPort(umlClass, _); // Has any port
+	Class.ownedAttribute(umlClass, umlProperty);
+	Property.name(umlProperty, umlName);
 	check(umlName.startsWith("aswct_"));
 }
 
+//Working
 pattern compositionSwComponentTypes(umlClass: UML::Class){
 	Block.base_Class(_, umlClass); // Has <<Block>> Stereotype defined
-	UML::Class.ownedPort(umlClass, _); // Has any port
+	Class.ownedAttribute(umlClass, umlProperty);
+	Property(umlProperty); //Has any property
 	Class.name(umlClass, umlName);
 	check(umlName.startsWith("cswct_"));
 }
+
+pattern swComponentPrototypes(umlClass: UML::Class, umlProperty: UML::Property){
+	Block.base_Class(_, umlClass); // Has <<Block>> Stereotype defined
+	Class.ownedAttribute(umlClass, umlProperty);
+	Property.ownedElement(umlProperty, umlPort);
+	Port(umlPort);
+}
+
+pattern receivePortAswct(umlProperty: UML::Property, umlPort: UML::Port){
+	find atomicSwComponentTypes(umlProperty);
+	Property.ownedElement(umlProperty, umlPort);
+	InformationFlow.source(umlFlow, umlPort);
+	ItemFlow.base_InformationFlow(_, umlFlow);
+}
+
+pattern providePortAswct(umlProperty: UML::Property, umlPort: UML::Port){
+	find atomicSwComponentTypes(umlProperty);
+	Property.ownedElement(umlProperty, umlPort);
+	InformationFlow.target(umlFlow, umlPort);
+	ItemFlow.base_InformationFlow(_, umlFlow);
+}
+
+pattern receivePortCswct(umlClass: UML::Class, umlPort: UML::Port){
+	find compositionSwComponentTypes(umlClass);
+	Class.ownedElement(umlClass, umlPort);
+	InformationFlow.source(umlFlow, umlPort);
+	ItemFlow.base_InformationFlow(_, umlFlow);
+}
+
+pattern providePortCswct(umlClass: UML::Class, umlPort: UML::Port){
+	find compositionSwComponentTypes(umlClass);
+	Class.ownedElement(umlClass, umlPort);
+	InformationFlow.target(umlFlow, umlPort);
+	ItemFlow.base_InformationFlow(_, umlFlow);
+}
+
+pattern assemblySwConnectors(umlInfFlow: UML::InformationFlow, umlSourcePort: UML::Port, umlTargetPort: UML::Port){
+	ItemFlow.base_InformationFlow(_, umlInfFlow);
+	Property.ownedElement(_, umlSourcePort);
+	Property.ownedElement(_, umlTargetPort);
+}
+
+pattern delegateSwConnectors(umlInfFlow: UML::InformationFlow, umlSourcePort: UML::Port, umlTargetPort: UML::Port){
+	ItemFlow.base_InformationFlow(_, umlInfFlow);
+	Property.ownedElement(_, umlSourcePort);
+	neg Property.ownedElement(_, umlTargetPort);
+}
+
+pattern csiOperation(umlClass: UML::Class){
+	InterfaceBlock.base_Class(_, umlClass);
+	Class.ownedOperation(umlClass, _);
+	Class.ownedOperation.name(umlClass, umlName);
+	check(umlName.startsWith("cso_"));
+}
+
+pattern sriVariableDataPrototype(umlClass: UML::Class){
+	InterfaceBlock.base_Class(_, umlClass);
+	Class.ownedAttribute(umlClass, _);
+	Class.ownedAttribute.name(umlClass, umlName);
+	check(umlName.startsWith("vdp_"));
+}
+
 

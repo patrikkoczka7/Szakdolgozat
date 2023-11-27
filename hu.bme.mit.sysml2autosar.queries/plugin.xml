@@ -6,10 +6,20 @@
   </extension>
   <extension id="hu.bme.mit.sysml2autosar.queries.Patterns" point="org.eclipse.viatra.query.runtime.queryspecification">
     <group group="org.eclipse.viatra.query.runtime.extensibility.SingletonExtensionFactory:hu.bme.mit.sysml2autosar.queries.Patterns" id="hu.bme.mit.sysml2autosar.queries.Patterns">
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.applicationDataType"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.clientServerInterfaceType"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.senderReceiverInterfaceType"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.atomicSwComponentTypes"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.compositionSwComponentTypes"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.swComponentPrototypes"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.receivePortAswct"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.providePortAswct"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.receivePortCswct"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.providePortCswct"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.assemblySwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.delegateSwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.csiOperation"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.sriVariableDataPrototype"/>
     </group>
   </extension>
 </plugin>
