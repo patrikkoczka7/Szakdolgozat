@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.uml2.uml.DataType;
 import org.eclipse.viatra.query.runtime.api.IPatternMatch;
 import org.eclipse.viatra.query.runtime.api.IQuerySpecification;
@@ -25,16 +24,12 @@ import org.eclipse.viatra.query.runtime.api.impl.BaseGeneratedEMFQuerySpecificat
 import org.eclipse.viatra.query.runtime.api.impl.BaseMatcher;
 import org.eclipse.viatra.query.runtime.api.impl.BasePatternMatch;
 import org.eclipse.viatra.query.runtime.emf.types.EClassTransitiveInstancesKey;
-import org.eclipse.viatra.query.runtime.emf.types.EDataTypeInSlotsKey;
 import org.eclipse.viatra.query.runtime.emf.types.EStructuralFeatureInstancesKey;
 import org.eclipse.viatra.query.runtime.matchers.backend.QueryEvaluationHint;
-import org.eclipse.viatra.query.runtime.matchers.psystem.IExpressionEvaluator;
-import org.eclipse.viatra.query.runtime.matchers.psystem.IValueProvider;
 import org.eclipse.viatra.query.runtime.matchers.psystem.PBody;
 import org.eclipse.viatra.query.runtime.matchers.psystem.PVariable;
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.Equality;
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExportedParameter;
-import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExpressionEvaluation;
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.TypeConstraint;
 import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameter;
 import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameterDirection;
@@ -48,11 +43,9 @@ import org.eclipse.viatra.query.runtime.util.ViatraQueryLoggingUtil;
  * 
  * <p>Original source:
  *         <code><pre>
- *         //Working
  *         pattern applicationDataType(umlDataType: UML::DataType){
- *         	DataType(umlDataType);
- *         	DataType.name(umlDataType, umlName);
- *         	check(umlName.startsWith("apdt_"));
+ *         	Model.packagedElement(_, umlDataType);
+ *         	ValueType.base_DataType(_, umlDataType);
  *         }
  * </pre></code>
  * 
@@ -244,11 +237,9 @@ public final class ApplicationDataType extends BaseGeneratedEMFQuerySpecificatio
    * 
    * <p>Original source:
    * <code><pre>
-   * //Working
    * pattern applicationDataType(umlDataType: UML::DataType){
-   * 	DataType(umlDataType);
-   * 	DataType.name(umlDataType, umlName);
-   * 	check(umlName.startsWith("apdt_"));
+   * 	Model.packagedElement(_, umlDataType);
+   * 	ValueType.base_DataType(_, umlDataType);
    * }
    * </pre></code>
    * 
@@ -543,45 +534,27 @@ public final class ApplicationDataType extends BaseGeneratedEMFQuerySpecificatio
       {
           PBody body = new PBody(this);
           PVariable var_umlDataType = body.getOrCreateVariableByName("umlDataType");
-          PVariable var_umlName = body.getOrCreateVariableByName("umlName");
+          PVariable var___0_ = body.getOrCreateVariableByName("_<0>");
+          PVariable var___1_ = body.getOrCreateVariableByName("_<1>");
           new TypeConstraint(body, Tuples.flatTupleOf(var_umlDataType), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "DataType")));
           body.setSymbolicParameters(Arrays.<ExportedParameter>asList(
              new ExportedParameter(body, var_umlDataType, parameter_umlDataType)
           ));
-          // 	DataType(umlDataType)
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlDataType), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "DataType")));
-          // 	DataType.name(umlDataType, umlName)
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlDataType), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "DataType")));
+          // 	Model.packagedElement(_, umlDataType)
+          new TypeConstraint(body, Tuples.flatTupleOf(var___0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Model")));
           PVariable var__virtual_0_ = body.getOrCreateVariableByName(".virtual{0}");
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlDataType, var__virtual_0_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "NamedElement", "name")));
-          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_0_), new EDataTypeInSlotsKey((EDataType)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/Types", "String")));
-          new Equality(body, var__virtual_0_, var_umlName);
-          // 	check(umlName.startsWith("apdt_"))
-          new ExpressionEvaluation(body, new IExpressionEvaluator() {
-          
-              @Override
-              public String getShortDescription() {
-                  return "Expression evaluation from pattern applicationDataType";
-              }
-              
-              @Override
-              public Iterable<String> getInputParameterNames() {
-                  return Arrays.asList("umlName");}
-          
-              @Override
-              public Object evaluateExpression(IValueProvider provider) throws Exception {
-                  String umlName = (String) provider.getValue("umlName");
-                  return evaluateExpression_1_1(umlName);
-              }
-          },  null, false);
+          new TypeConstraint(body, Tuples.flatTupleOf(var___0_, var__virtual_0_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Package", "packagedElement")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "PackageableElement")));
+          new Equality(body, var__virtual_0_, var_umlDataType);
+          // 	ValueType.base_DataType(_, umlDataType)
+          new TypeConstraint(body, Tuples.flatTupleOf(var___1_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/papyrus/sysml/1.6/SysML/Blocks", "ValueType")));
+          PVariable var__virtual_1_ = body.getOrCreateVariableByName(".virtual{1}");
+          new TypeConstraint(body, Tuples.flatTupleOf(var___1_, var__virtual_1_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/papyrus/sysml/1.6/SysML/Blocks", "ValueType", "base_DataType")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_1_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "DataType")));
+          new Equality(body, var__virtual_1_, var_umlDataType);
           bodies.add(body);
       }
       return bodies;
     }
-  }
-
-  private static boolean evaluateExpression_1_1(final String umlName) {
-    boolean _startsWith = umlName.startsWith("apdt_");
-    return _startsWith;
   }
 }

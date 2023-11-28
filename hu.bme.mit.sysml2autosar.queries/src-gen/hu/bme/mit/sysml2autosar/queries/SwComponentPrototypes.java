@@ -30,6 +30,7 @@ import org.eclipse.viatra.query.runtime.matchers.psystem.PBody;
 import org.eclipse.viatra.query.runtime.matchers.psystem.PVariable;
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.Equality;
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExportedParameter;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.PositivePatternCall;
 import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.TypeConstraint;
 import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameter;
 import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameterDirection;
@@ -44,10 +45,9 @@ import org.eclipse.viatra.query.runtime.util.ViatraQueryLoggingUtil;
  * <p>Original source:
  *         <code><pre>
  *         pattern swComponentPrototypes(umlClass: UML::Class, umlProperty: UML::Property){
- *         	Block.base_Class(_, umlClass); // Has {@literal <}{@literal <}Block{@literal >}{@literal >} Stereotype defined
+ *         	find compositionSwComponentTypes(umlClass);
+ *         	find atomicSwComponentTypes(umlProperty);
  *         	Class.ownedAttribute(umlClass, umlProperty);
- *         	Property.ownedElement(umlProperty, umlPort);
- *         	Port(umlPort);
  *         }
  * </pre></code>
  * 
@@ -261,10 +261,9 @@ public final class SwComponentPrototypes extends BaseGeneratedEMFQuerySpecificat
    * <p>Original source:
    * <code><pre>
    * pattern swComponentPrototypes(umlClass: UML::Class, umlProperty: UML::Property){
-   * 	Block.base_Class(_, umlClass); // Has {@literal <}{@literal <}Block{@literal >}{@literal >} Stereotype defined
+   * 	find compositionSwComponentTypes(umlClass);
+   * 	find atomicSwComponentTypes(umlProperty);
    * 	Class.ownedAttribute(umlClass, umlProperty);
-   * 	Property.ownedElement(umlProperty, umlPort);
-   * 	Port(umlPort);
    * }
    * </pre></code>
    * 
@@ -690,34 +689,22 @@ public final class SwComponentPrototypes extends BaseGeneratedEMFQuerySpecificat
           PBody body = new PBody(this);
           PVariable var_umlClass = body.getOrCreateVariableByName("umlClass");
           PVariable var_umlProperty = body.getOrCreateVariableByName("umlProperty");
-          PVariable var___0_ = body.getOrCreateVariableByName("_<0>");
-          PVariable var_umlPort = body.getOrCreateVariableByName("umlPort");
           new TypeConstraint(body, Tuples.flatTupleOf(var_umlClass), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Class")));
           new TypeConstraint(body, Tuples.flatTupleOf(var_umlProperty), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Property")));
           body.setSymbolicParameters(Arrays.<ExportedParameter>asList(
              new ExportedParameter(body, var_umlClass, parameter_umlClass),
              new ExportedParameter(body, var_umlProperty, parameter_umlProperty)
           ));
-          // 	Block.base_Class(_, umlClass)
-          new TypeConstraint(body, Tuples.flatTupleOf(var___0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/papyrus/sysml/1.6/SysML/Blocks", "Block")));
-          PVariable var__virtual_0_ = body.getOrCreateVariableByName(".virtual{0}");
-          new TypeConstraint(body, Tuples.flatTupleOf(var___0_, var__virtual_0_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/papyrus/sysml/1.6/SysML/Blocks", "Block", "base_Class")));
-          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Class")));
-          new Equality(body, var__virtual_0_, var_umlClass);
-          //  // Has <<Block>> Stereotype defined	Class.ownedAttribute(umlClass, umlProperty)
+          // 	find compositionSwComponentTypes(umlClass)
+          new PositivePatternCall(body, Tuples.flatTupleOf(var_umlClass), CompositionSwComponentTypes.instance().getInternalQueryRepresentation());
+          // 	find atomicSwComponentTypes(umlProperty)
+          new PositivePatternCall(body, Tuples.flatTupleOf(var_umlProperty), AtomicSwComponentTypes.instance().getInternalQueryRepresentation());
+          // 	Class.ownedAttribute(umlClass, umlProperty)
           new TypeConstraint(body, Tuples.flatTupleOf(var_umlClass), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Class")));
-          PVariable var__virtual_1_ = body.getOrCreateVariableByName(".virtual{1}");
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlClass, var__virtual_1_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "StructuredClassifier", "ownedAttribute")));
-          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_1_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Property")));
-          new Equality(body, var__virtual_1_, var_umlProperty);
-          // 	Property.ownedElement(umlProperty, umlPort)
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlProperty), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Property")));
-          PVariable var__virtual_2_ = body.getOrCreateVariableByName(".virtual{2}");
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlProperty, var__virtual_2_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Element", "ownedElement")));
-          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_2_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Element")));
-          new Equality(body, var__virtual_2_, var_umlPort);
-          // 	Port(umlPort)
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlPort), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Port")));
+          PVariable var__virtual_0_ = body.getOrCreateVariableByName(".virtual{0}");
+          new TypeConstraint(body, Tuples.flatTupleOf(var_umlClass, var__virtual_0_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "StructuredClassifier", "ownedAttribute")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Property")));
+          new Equality(body, var__virtual_0_, var_umlProperty);
           bodies.add(body);
       }
       return bodies;

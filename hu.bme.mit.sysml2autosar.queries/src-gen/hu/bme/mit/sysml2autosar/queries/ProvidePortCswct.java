@@ -44,11 +44,10 @@ import org.eclipse.viatra.query.runtime.util.ViatraQueryLoggingUtil;
  * 
  * <p>Original source:
  *         <code><pre>
- *         pattern providePortCswct(umlClass: UML::Class, umlPort: UML::Port){
- *         	find compositionSwComponentTypes(umlClass);
- *         	Class.ownedElement(umlClass, umlPort);
- *         	InformationFlow.target(umlFlow, umlPort);
- *         	ItemFlow.base_InformationFlow(_, umlFlow);
+ *         pattern providePortCswct(umlInterface: UML::Class, umlClass: UML::Class, umlPort: UML::Port){
+ *         	find pDelegateSwConnectors(_, _, _, umlClass, umlPort);
+ *         	InterfaceBlock.base_Class(_, umlInterface);
+ *         	Port.type(umlPort, umlInterface);
  *         }
  * </pre></code>
  * 
@@ -71,13 +70,16 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
    * 
    */
   public static abstract class Match extends BasePatternMatch {
+    private org.eclipse.uml2.uml.Class fUmlInterface;
+
     private org.eclipse.uml2.uml.Class fUmlClass;
 
     private Port fUmlPort;
 
-    private static List<String> parameterNames = makeImmutableList("umlClass", "umlPort");
+    private static List<String> parameterNames = makeImmutableList("umlInterface", "umlClass", "umlPort");
 
-    private Match(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+    private Match(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      this.fUmlInterface = pUmlInterface;
       this.fUmlClass = pUmlClass;
       this.fUmlPort = pUmlPort;
     }
@@ -85,6 +87,7 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
     @Override
     public Object get(final String parameterName) {
       switch(parameterName) {
+          case "umlInterface": return this.fUmlInterface;
           case "umlClass": return this.fUmlClass;
           case "umlPort": return this.fUmlPort;
           default: return null;
@@ -94,10 +97,15 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
     @Override
     public Object get(final int index) {
       switch(index) {
-          case 0: return this.fUmlClass;
-          case 1: return this.fUmlPort;
+          case 0: return this.fUmlInterface;
+          case 1: return this.fUmlClass;
+          case 2: return this.fUmlPort;
           default: return null;
       }
+    }
+
+    public org.eclipse.uml2.uml.Class getUmlInterface() {
+      return this.fUmlInterface;
     }
 
     public org.eclipse.uml2.uml.Class getUmlClass() {
@@ -111,6 +119,10 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
     @Override
     public boolean set(final String parameterName, final Object newValue) {
       if (!isMutable()) throw new java.lang.UnsupportedOperationException();
+      if ("umlInterface".equals(parameterName) ) {
+          this.fUmlInterface = (org.eclipse.uml2.uml.Class) newValue;
+          return true;
+      }
       if ("umlClass".equals(parameterName) ) {
           this.fUmlClass = (org.eclipse.uml2.uml.Class) newValue;
           return true;
@@ -120,6 +132,11 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
           return true;
       }
       return false;
+    }
+
+    public void setUmlInterface(final org.eclipse.uml2.uml.Class pUmlInterface) {
+      if (!isMutable()) throw new java.lang.UnsupportedOperationException();
+      this.fUmlInterface = pUmlInterface;
     }
 
     public void setUmlClass(final org.eclipse.uml2.uml.Class pUmlClass) {
@@ -144,17 +161,18 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
 
     @Override
     public Object[] toArray() {
-      return new Object[]{fUmlClass, fUmlPort};
+      return new Object[]{fUmlInterface, fUmlClass, fUmlPort};
     }
 
     @Override
     public ProvidePortCswct.Match toImmutable() {
-      return isMutable() ? newMatch(fUmlClass, fUmlPort) : this;
+      return isMutable() ? newMatch(fUmlInterface, fUmlClass, fUmlPort) : this;
     }
 
     @Override
     public String prettyPrint() {
       StringBuilder result = new StringBuilder();
+      result.append("\"umlInterface\"=" + prettyPrintValue(fUmlInterface) + ", ");
       result.append("\"umlClass\"=" + prettyPrintValue(fUmlClass) + ", ");
       result.append("\"umlPort\"=" + prettyPrintValue(fUmlPort));
       return result.toString();
@@ -162,7 +180,7 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
 
     @Override
     public int hashCode() {
-      return Objects.hash(fUmlClass, fUmlPort);
+      return Objects.hash(fUmlInterface, fUmlClass, fUmlPort);
     }
 
     @Override
@@ -174,7 +192,7 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
       }
       if ((obj instanceof ProvidePortCswct.Match)) {
           ProvidePortCswct.Match other = (ProvidePortCswct.Match) obj;
-          return Objects.equals(fUmlClass, other.fUmlClass) && Objects.equals(fUmlPort, other.fUmlPort);
+          return Objects.equals(fUmlInterface, other.fUmlInterface) && Objects.equals(fUmlClass, other.fUmlClass) && Objects.equals(fUmlPort, other.fUmlPort);
       } else {
           // this should be infrequent
           if (!(obj instanceof IPatternMatch)) {
@@ -198,38 +216,40 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
      * 
      */
     public static ProvidePortCswct.Match newEmptyMatch() {
-      return new Mutable(null, null);
+      return new Mutable(null, null, null);
     }
 
     /**
      * Returns a mutable (partial) match.
      * Fields of the mutable match can be filled to create a partial match, usable as matcher input.
      * 
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @return the new, mutable (partial) match object.
      * 
      */
-    public static ProvidePortCswct.Match newMutableMatch(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-      return new Mutable(pUmlClass, pUmlPort);
+    public static ProvidePortCswct.Match newMutableMatch(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return new Mutable(pUmlInterface, pUmlClass, pUmlPort);
     }
 
     /**
      * Returns a new (partial) match.
      * This can be used e.g. to call the matcher with a partial match.
      * <p>The returned match will be immutable. Use {@link #newEmptyMatch()} to obtain a mutable match object.
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @return the (partial) match object.
      * 
      */
-    public static ProvidePortCswct.Match newMatch(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-      return new Immutable(pUmlClass, pUmlPort);
+    public static ProvidePortCswct.Match newMatch(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return new Immutable(pUmlInterface, pUmlClass, pUmlPort);
     }
 
     private static final class Mutable extends ProvidePortCswct.Match {
-      Mutable(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-        super(pUmlClass, pUmlPort);
+      Mutable(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+        super(pUmlInterface, pUmlClass, pUmlPort);
       }
 
       @Override
@@ -239,8 +259,8 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
     }
 
     private static final class Immutable extends ProvidePortCswct.Match {
-      Immutable(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-        super(pUmlClass, pUmlPort);
+      Immutable(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+        super(pUmlInterface, pUmlClass, pUmlPort);
       }
 
       @Override
@@ -261,11 +281,10 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
    * 
    * <p>Original source:
    * <code><pre>
-   * pattern providePortCswct(umlClass: UML::Class, umlPort: UML::Port){
-   * 	find compositionSwComponentTypes(umlClass);
-   * 	Class.ownedElement(umlClass, umlPort);
-   * 	InformationFlow.target(umlFlow, umlPort);
-   * 	ItemFlow.base_InformationFlow(_, umlFlow);
+   * pattern providePortCswct(umlInterface: UML::Class, umlClass: UML::Class, umlPort: UML::Port){
+   * 	find pDelegateSwConnectors(_, _, _, umlClass, umlPort);
+   * 	InterfaceBlock.base_Class(_, umlInterface);
+   * 	Port.type(umlPort, umlInterface);
    * }
    * </pre></code>
    * 
@@ -301,9 +320,11 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
       return new Matcher();
     }
 
-    private static final int POSITION_UMLCLASS = 0;
+    private static final int POSITION_UMLINTERFACE = 0;
 
-    private static final int POSITION_UMLPORT = 1;
+    private static final int POSITION_UMLCLASS = 1;
+
+    private static final int POSITION_UMLPORT = 2;
 
     private static final Logger LOGGER = ViatraQueryLoggingUtil.getLogger(ProvidePortCswct.Matcher.class);
 
@@ -321,13 +342,14 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
 
     /**
      * Returns the set of all matches of the pattern that conform to the given fixed values of some parameters.
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @return matches represented as a Match object.
      * 
      */
-    public Collection<ProvidePortCswct.Match> getAllMatches(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-      return rawStreamAllMatches(new Object[]{pUmlClass, pUmlPort}).collect(Collectors.toSet());
+    public Collection<ProvidePortCswct.Match> getAllMatches(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return rawStreamAllMatches(new Object[]{pUmlInterface, pUmlClass, pUmlPort}).collect(Collectors.toSet());
     }
 
     /**
@@ -336,74 +358,153 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
      * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
      * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
      * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @return a stream of matches represented as a Match object.
      * 
      */
-    public Stream<ProvidePortCswct.Match> streamAllMatches(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-      return rawStreamAllMatches(new Object[]{pUmlClass, pUmlPort});
+    public Stream<ProvidePortCswct.Match> streamAllMatches(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return rawStreamAllMatches(new Object[]{pUmlInterface, pUmlClass, pUmlPort});
     }
 
     /**
      * Returns an arbitrarily chosen match of the pattern that conforms to the given fixed values of some parameters.
      * Neither determinism nor randomness of selection is guaranteed.
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @return a match represented as a Match object, or null if no match is found.
      * 
      */
-    public Optional<ProvidePortCswct.Match> getOneArbitraryMatch(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-      return rawGetOneArbitraryMatch(new Object[]{pUmlClass, pUmlPort});
+    public Optional<ProvidePortCswct.Match> getOneArbitraryMatch(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return rawGetOneArbitraryMatch(new Object[]{pUmlInterface, pUmlClass, pUmlPort});
     }
 
     /**
      * Indicates whether the given combination of specified pattern parameters constitute a valid pattern match,
      * under any possible substitution of the unspecified parameters (if any).
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @return true if the input is a valid (partial) match of the pattern.
      * 
      */
-    public boolean hasMatch(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-      return rawHasMatch(new Object[]{pUmlClass, pUmlPort});
+    public boolean hasMatch(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return rawHasMatch(new Object[]{pUmlInterface, pUmlClass, pUmlPort});
     }
 
     /**
      * Returns the number of all matches of the pattern that conform to the given fixed values of some parameters.
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @return the number of pattern matches found.
      * 
      */
-    public int countMatches(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-      return rawCountMatches(new Object[]{pUmlClass, pUmlPort});
+    public int countMatches(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return rawCountMatches(new Object[]{pUmlInterface, pUmlClass, pUmlPort});
     }
 
     /**
      * Executes the given processor on an arbitrarily chosen match of the pattern that conforms to the given fixed values of some parameters.
      * Neither determinism nor randomness of selection is guaranteed.
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @param processor the action that will process the selected match.
      * @return true if the pattern has at least one match with the given parameter values, false if the processor was not invoked
      * 
      */
-    public boolean forOneArbitraryMatch(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort, final Consumer<? super ProvidePortCswct.Match> processor) {
-      return rawForOneArbitraryMatch(new Object[]{pUmlClass, pUmlPort}, processor);
+    public boolean forOneArbitraryMatch(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort, final Consumer<? super ProvidePortCswct.Match> processor) {
+      return rawForOneArbitraryMatch(new Object[]{pUmlInterface, pUmlClass, pUmlPort}, processor);
     }
 
     /**
      * Returns a new (partial) match.
      * This can be used e.g. to call the matcher with a partial match.
      * <p>The returned match will be immutable. Use {@link #newEmptyMatch()} to obtain a mutable match object.
+     * @param pUmlInterface the fixed value of pattern parameter umlInterface, or null if not bound.
      * @param pUmlClass the fixed value of pattern parameter umlClass, or null if not bound.
      * @param pUmlPort the fixed value of pattern parameter umlPort, or null if not bound.
      * @return the (partial) match object.
      * 
      */
-    public ProvidePortCswct.Match newMatch(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
-      return ProvidePortCswct.Match.newMatch(pUmlClass, pUmlPort);
+    public ProvidePortCswct.Match newMatch(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return ProvidePortCswct.Match.newMatch(pUmlInterface, pUmlClass, pUmlPort);
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for umlInterface.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    protected Stream<org.eclipse.uml2.uml.Class> rawStreamAllValuesOfumlInterface(final Object[] parameters) {
+      return rawStreamAllValues(POSITION_UMLINTERFACE, parameters).map(org.eclipse.uml2.uml.Class.class::cast);
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for umlInterface.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<org.eclipse.uml2.uml.Class> getAllValuesOfumlInterface() {
+      return rawStreamAllValuesOfumlInterface(emptyArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for umlInterface.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<org.eclipse.uml2.uml.Class> streamAllValuesOfumlInterface() {
+      return rawStreamAllValuesOfumlInterface(emptyArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for umlInterface.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<org.eclipse.uml2.uml.Class> streamAllValuesOfumlInterface(final ProvidePortCswct.Match partialMatch) {
+      return rawStreamAllValuesOfumlInterface(partialMatch.toArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for umlInterface.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<org.eclipse.uml2.uml.Class> streamAllValuesOfumlInterface(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return rawStreamAllValuesOfumlInterface(new Object[]{null, pUmlClass, pUmlPort});
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for umlInterface.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<org.eclipse.uml2.uml.Class> getAllValuesOfumlInterface(final ProvidePortCswct.Match partialMatch) {
+      return rawStreamAllValuesOfumlInterface(partialMatch.toArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for umlInterface.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<org.eclipse.uml2.uml.Class> getAllValuesOfumlInterface(final org.eclipse.uml2.uml.Class pUmlClass, final Port pUmlPort) {
+      return rawStreamAllValuesOfumlInterface(new Object[]{null, pUmlClass, pUmlPort}).collect(Collectors.toSet());
     }
 
     /**
@@ -457,8 +558,8 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
      * @return the Stream of all values or empty set if there are no matches
      * 
      */
-    public Stream<org.eclipse.uml2.uml.Class> streamAllValuesOfumlClass(final Port pUmlPort) {
-      return rawStreamAllValuesOfumlClass(new Object[]{null, pUmlPort});
+    public Stream<org.eclipse.uml2.uml.Class> streamAllValuesOfumlClass(final org.eclipse.uml2.uml.Class pUmlInterface, final Port pUmlPort) {
+      return rawStreamAllValuesOfumlClass(new Object[]{pUmlInterface, null, pUmlPort});
     }
 
     /**
@@ -475,8 +576,8 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
      * @return the Set of all values or empty set if there are no matches
      * 
      */
-    public Set<org.eclipse.uml2.uml.Class> getAllValuesOfumlClass(final Port pUmlPort) {
-      return rawStreamAllValuesOfumlClass(new Object[]{null, pUmlPort}).collect(Collectors.toSet());
+    public Set<org.eclipse.uml2.uml.Class> getAllValuesOfumlClass(final org.eclipse.uml2.uml.Class pUmlInterface, final Port pUmlPort) {
+      return rawStreamAllValuesOfumlClass(new Object[]{pUmlInterface, null, pUmlPort}).collect(Collectors.toSet());
     }
 
     /**
@@ -530,8 +631,8 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
      * @return the Stream of all values or empty set if there are no matches
      * 
      */
-    public Stream<Port> streamAllValuesOfumlPort(final org.eclipse.uml2.uml.Class pUmlClass) {
-      return rawStreamAllValuesOfumlPort(new Object[]{pUmlClass, null});
+    public Stream<Port> streamAllValuesOfumlPort(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass) {
+      return rawStreamAllValuesOfumlPort(new Object[]{pUmlInterface, pUmlClass, null});
     }
 
     /**
@@ -548,14 +649,14 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
      * @return the Set of all values or empty set if there are no matches
      * 
      */
-    public Set<Port> getAllValuesOfumlPort(final org.eclipse.uml2.uml.Class pUmlClass) {
-      return rawStreamAllValuesOfumlPort(new Object[]{pUmlClass, null}).collect(Collectors.toSet());
+    public Set<Port> getAllValuesOfumlPort(final org.eclipse.uml2.uml.Class pUmlInterface, final org.eclipse.uml2.uml.Class pUmlClass) {
+      return rawStreamAllValuesOfumlPort(new Object[]{pUmlInterface, pUmlClass, null}).collect(Collectors.toSet());
     }
 
     @Override
     protected ProvidePortCswct.Match tupleToMatch(final Tuple t) {
       try {
-          return ProvidePortCswct.Match.newMatch((org.eclipse.uml2.uml.Class) t.get(POSITION_UMLCLASS), (Port) t.get(POSITION_UMLPORT));
+          return ProvidePortCswct.Match.newMatch((org.eclipse.uml2.uml.Class) t.get(POSITION_UMLINTERFACE), (org.eclipse.uml2.uml.Class) t.get(POSITION_UMLCLASS), (Port) t.get(POSITION_UMLPORT));
       } catch(ClassCastException e) {
           LOGGER.error("Element(s) in tuple not properly typed!",e);
           return null;
@@ -565,7 +666,7 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
     @Override
     protected ProvidePortCswct.Match arrayToMatch(final Object[] match) {
       try {
-          return ProvidePortCswct.Match.newMatch((org.eclipse.uml2.uml.Class) match[POSITION_UMLCLASS], (Port) match[POSITION_UMLPORT]);
+          return ProvidePortCswct.Match.newMatch((org.eclipse.uml2.uml.Class) match[POSITION_UMLINTERFACE], (org.eclipse.uml2.uml.Class) match[POSITION_UMLCLASS], (Port) match[POSITION_UMLPORT]);
       } catch(ClassCastException e) {
           LOGGER.error("Element(s) in array not properly typed!",e);
           return null;
@@ -575,7 +676,7 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
     @Override
     protected ProvidePortCswct.Match arrayToMatchMutable(final Object[] match) {
       try {
-          return ProvidePortCswct.Match.newMutableMatch((org.eclipse.uml2.uml.Class) match[POSITION_UMLCLASS], (Port) match[POSITION_UMLPORT]);
+          return ProvidePortCswct.Match.newMutableMatch((org.eclipse.uml2.uml.Class) match[POSITION_UMLINTERFACE], (org.eclipse.uml2.uml.Class) match[POSITION_UMLCLASS], (Port) match[POSITION_UMLPORT]);
       } catch(ClassCastException e) {
           LOGGER.error("Element(s) in array not properly typed!",e);
           return null;
@@ -626,7 +727,7 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
 
   @Override
   public ProvidePortCswct.Match newMatch(final Object... parameters) {
-    return ProvidePortCswct.Match.newMatch((org.eclipse.uml2.uml.Class) parameters[0], (org.eclipse.uml2.uml.Port) parameters[1]);
+    return ProvidePortCswct.Match.newMatch((org.eclipse.uml2.uml.Class) parameters[0], (org.eclipse.uml2.uml.Class) parameters[1], (org.eclipse.uml2.uml.Port) parameters[2]);
   }
 
   /**
@@ -658,11 +759,13 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
   private static class GeneratedPQuery extends BaseGeneratedEMFPQuery {
     private static final ProvidePortCswct.GeneratedPQuery INSTANCE = new GeneratedPQuery();
 
+    private final PParameter parameter_umlInterface = new PParameter("umlInterface", "org.eclipse.uml2.uml.Class", new EClassTransitiveInstancesKey((EClass)getClassifierLiteralSafe("http://www.eclipse.org/uml2/5.0.0/UML", "Class")), PParameterDirection.INOUT);
+
     private final PParameter parameter_umlClass = new PParameter("umlClass", "org.eclipse.uml2.uml.Class", new EClassTransitiveInstancesKey((EClass)getClassifierLiteralSafe("http://www.eclipse.org/uml2/5.0.0/UML", "Class")), PParameterDirection.INOUT);
 
     private final PParameter parameter_umlPort = new PParameter("umlPort", "org.eclipse.uml2.uml.Port", new EClassTransitiveInstancesKey((EClass)getClassifierLiteralSafe("http://www.eclipse.org/uml2/5.0.0/UML", "Port")), PParameterDirection.INOUT);
 
-    private final List<PParameter> parameters = Arrays.asList(parameter_umlClass, parameter_umlPort);
+    private final List<PParameter> parameters = Arrays.asList(parameter_umlInterface, parameter_umlClass, parameter_umlPort);
 
     private GeneratedPQuery() {
       super(PVisibility.PUBLIC);
@@ -675,7 +778,7 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
 
     @Override
     public List<String> getParameterNames() {
-      return Arrays.asList("umlClass","umlPort");
+      return Arrays.asList("umlInterface","umlClass","umlPort");
     }
 
     @Override
@@ -689,36 +792,35 @@ public final class ProvidePortCswct extends BaseGeneratedEMFQuerySpecification<P
       Set<PBody> bodies = new LinkedHashSet<>();
       {
           PBody body = new PBody(this);
+          PVariable var_umlInterface = body.getOrCreateVariableByName("umlInterface");
           PVariable var_umlClass = body.getOrCreateVariableByName("umlClass");
           PVariable var_umlPort = body.getOrCreateVariableByName("umlPort");
-          PVariable var_umlFlow = body.getOrCreateVariableByName("umlFlow");
           PVariable var___0_ = body.getOrCreateVariableByName("_<0>");
+          PVariable var___1_ = body.getOrCreateVariableByName("_<1>");
+          PVariable var___2_ = body.getOrCreateVariableByName("_<2>");
+          PVariable var___3_ = body.getOrCreateVariableByName("_<3>");
+          new TypeConstraint(body, Tuples.flatTupleOf(var_umlInterface), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Class")));
           new TypeConstraint(body, Tuples.flatTupleOf(var_umlClass), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Class")));
           new TypeConstraint(body, Tuples.flatTupleOf(var_umlPort), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Port")));
           body.setSymbolicParameters(Arrays.<ExportedParameter>asList(
+             new ExportedParameter(body, var_umlInterface, parameter_umlInterface),
              new ExportedParameter(body, var_umlClass, parameter_umlClass),
              new ExportedParameter(body, var_umlPort, parameter_umlPort)
           ));
-          // 	find compositionSwComponentTypes(umlClass)
-          new PositivePatternCall(body, Tuples.flatTupleOf(var_umlClass), CompositionSwComponentTypes.instance().getInternalQueryRepresentation());
-          // 	Class.ownedElement(umlClass, umlPort)
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlClass), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Class")));
+          // 	find pDelegateSwConnectors(_, _, _, umlClass, umlPort)
+          new PositivePatternCall(body, Tuples.flatTupleOf(var___0_, var___1_, var___2_, var_umlClass, var_umlPort), PDelegateSwConnectors.instance().getInternalQueryRepresentation());
+          // 	InterfaceBlock.base_Class(_, umlInterface)
+          new TypeConstraint(body, Tuples.flatTupleOf(var___3_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/papyrus/sysml/1.6/SysML/PortsAndFlows", "InterfaceBlock")));
           PVariable var__virtual_0_ = body.getOrCreateVariableByName(".virtual{0}");
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlClass, var__virtual_0_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Element", "ownedElement")));
-          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Element")));
-          new Equality(body, var__virtual_0_, var_umlPort);
-          // 	InformationFlow.target(umlFlow, umlPort)
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlFlow), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "InformationFlow")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var___3_, var__virtual_0_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/papyrus/sysml/1.6/SysML/Blocks", "Block", "base_Class")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Class")));
+          new Equality(body, var__virtual_0_, var_umlInterface);
+          // 	Port.type(umlPort, umlInterface)
+          new TypeConstraint(body, Tuples.flatTupleOf(var_umlPort), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Port")));
           PVariable var__virtual_1_ = body.getOrCreateVariableByName(".virtual{1}");
-          new TypeConstraint(body, Tuples.flatTupleOf(var_umlFlow, var__virtual_1_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "DirectedRelationship", "target")));
-          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_1_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Element")));
-          new Equality(body, var__virtual_1_, var_umlPort);
-          // 	ItemFlow.base_InformationFlow(_, umlFlow)
-          new TypeConstraint(body, Tuples.flatTupleOf(var___0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/papyrus/sysml/1.6/SysML/PortsAndFlows", "ItemFlow")));
-          PVariable var__virtual_2_ = body.getOrCreateVariableByName(".virtual{2}");
-          new TypeConstraint(body, Tuples.flatTupleOf(var___0_, var__virtual_2_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/papyrus/sysml/1.6/SysML/PortsAndFlows", "ItemFlow", "base_InformationFlow")));
-          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_2_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "InformationFlow")));
-          new Equality(body, var__virtual_2_, var_umlFlow);
+          new TypeConstraint(body, Tuples.flatTupleOf(var_umlPort, var__virtual_1_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "TypedElement", "type")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_1_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://www.eclipse.org/uml2/5.0.0/UML", "Type")));
+          new Equality(body, var__virtual_1_, var_umlInterface);
           bodies.add(body);
       }
       return bodies;
