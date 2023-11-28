@@ -45,29 +45,43 @@ pattern swComponentPrototypes(umlClass: UML::Class, umlProperty: UML::Property){
 	Class.ownedAttribute(umlClass, umlProperty);
 }
 
-pattern receivePortAswct(umlProperty: UML::Property, umlPort: UML::Port){
-	find assemblySwConnectors(_, umlProperty, umlPort, _, _);
+pattern receivePortAswct(umlInterface: UML::Class, umlProperty: UML::Property, umlPort: UML::Port){
+	find assemblySwConnectors(_, _, umlProperty, umlPort, _, _);
+	InterfaceBlock.base_Class(_, umlInterface);
+	Port.type(umlPort, umlInterface);
 } or {
 	find rDelegateSwConnectors(_, _, _, umlProperty, umlPort);
+	InterfaceBlock.base_Class(_, umlInterface);
+	Port.type(umlPort, umlInterface);
 }
 
-pattern providePortAswct(umlProperty: UML::Property, umlPort: UML::Port){
-	find assemblySwConnectors(_, _, _,umlProperty, umlPort);
+pattern providePortAswct(umlInterface: UML::Class, umlProperty: UML::Property, umlPort: UML::Port){
+	find assemblySwConnectors(_, _, _, _,umlProperty, umlPort);
+	InterfaceBlock.base_Class(_, umlInterface);
+	Port.type(umlPort, umlInterface);
 } or {
 	find pDelegateSwConnectors(_, umlProperty, umlPort, _, _);
+	InterfaceBlock.base_Class(_, umlInterface);
+	Port.type(umlPort, umlInterface);
 }
 
-pattern receivePortCswct(umlClass: UML::Class, umlPort: UML::Port){
+pattern receivePortCswct(umlInterface: UML::Class, umlClass: UML::Class, umlPort: UML::Port){
 	find rDelegateSwConnectors(_, umlClass, umlPort, _, _);
+	InterfaceBlock.base_Class(_, umlInterface);
+	Port.type(umlPort, umlInterface);
 }
 
-pattern providePortCswct(umlClass: UML::Class, umlPort: UML::Port){
+pattern providePortCswct(umlInterface: UML::Class, umlClass: UML::Class, umlPort: UML::Port){
 	find pDelegateSwConnectors(_, _, _, umlClass, umlPort);
+	InterfaceBlock.base_Class(_, umlInterface);
+	Port.type(umlPort, umlInterface);
 }
 
-pattern assemblySwConnectors(umlInfFlow: UML::InformationFlow, umlSourceProperty: UML::Property, umlSourcePort: UML::Port, umlTargetProperty: UML::Property, umlTargetPort: UML::Port){
+pattern assemblySwConnectors(umlInfFlow: UML::InformationFlow, umlCswctClass: UML::Class, umlSourceProperty: UML::Property, umlSourcePort: UML::Port, umlTargetProperty: UML::Property, umlTargetPort: UML::Port){
 	find atomicSwComponentTypes(umlSourceProperty);
 	find atomicSwComponentTypes(umlTargetProperty);
+	Class.ownedAttribute(umlCswctClass, umlSourceProperty);
+	find compositionSwComponentTypes(umlCswctClass);
 	umlSourceProperty != umlTargetProperty;
 	
 	Property.type(umlSourceProperty, umlClass1);
@@ -126,13 +140,15 @@ pattern pDswConnInstanceRef(umlPDswConn: UML::InformationFlow, umlScp: UML::Prop
 	find pDelegateSwConnectors(umlPDswConn, umlScp, umlScpPPort, _, _);
 }
 
-//pattern rAswConnInstanceRef(umlRAswConn: UML::InformationFlow, umlScp: UML::Property, umlScpRPort: UML::Port){
-//	
-//}
-//
-//pattern pAswConnInstanceRef(umlPAswConn: UML::InformationFlow, umlScp: UML::Property, umlScpPPort: UML::Port){
-//	
-//}
+pattern rAswConnInstanceRef(umlRAswConn: UML::InformationFlow, umlSourceProperty: UML::Property, umlSourceRPort: UML::Port){
+	find assemblySwConnectors(umlRAswConn, _, umlSourceProperty, umlSourceRPort, _, _);
+	find swComponentPrototypes(_, umlSourceProperty);
+}
+
+pattern pAswConnInstanceRef(umlPAswConn: UML::InformationFlow, umlTargetProperty: UML::Property, umlTargetPPort: UML::Port){
+	find assemblySwConnectors(umlPAswConn, _, _, _, umlTargetProperty, umlTargetPPort);
+	find swComponentPrototypes(_, umlTargetProperty);
+}
 
 pattern csiOperation(umlCsi: UML::Class, umlOperation: UML::Operation){
 	find clientServerInterfaceType(umlCsi);

@@ -51,10 +51,12 @@ import hu.bme.mit.sysml2autosar.queries.AtomicSwComponentTypes;
 import hu.bme.mit.sysml2autosar.queries.ClientServerInterfaceType;
 import hu.bme.mit.sysml2autosar.queries.CompositionSwComponentTypes;
 import hu.bme.mit.sysml2autosar.queries.CsiOperation;
+import hu.bme.mit.sysml2autosar.queries.PAswConnInstanceRef;
 import hu.bme.mit.sysml2autosar.queries.PDelegateSwConnectors;
 import hu.bme.mit.sysml2autosar.queries.PDswConnInstanceRef;
 import hu.bme.mit.sysml2autosar.queries.ProvidePortAswct;
 import hu.bme.mit.sysml2autosar.queries.ProvidePortCswct;
+import hu.bme.mit.sysml2autosar.queries.RAswConnInstanceRef;
 import hu.bme.mit.sysml2autosar.queries.RDelegateSwConnectors;
 import hu.bme.mit.sysml2autosar.queries.RDswConnInstanceRef;
 import hu.bme.mit.sysml2autosar.queries.ReceivePortAswct;
@@ -173,10 +175,13 @@ public class BatchModelTransformation {
 	protected BatchTransformationRule<?, ?> receivePortAswctRule = batchTransformationRuleFactory.createRule(ReceivePortAswct.instance()).name("RPortAswctRule").action(match -> {
 		Property aswct = match.getUmlProperty();
 		Port rPort = match.getUmlPort();
+		Class receiveInterface = match.getUmlInterface();
 		String rpp_name = rPort.getName();
 		AtomicSwComponentType autosarAswct = arxml_aswcts.get(aswct);
+		PortInterface autosarInterface = arxml_interfaces.get(receiveInterface);
 		RPortPrototype rpp = ComponentsFactory.eINSTANCE.createRPortPrototype();
 		rpp.setShortName(rpp_name);
+		rpp.setRequiredInterface(autosarInterface);
 		autosarAswct.getPorts().add(rpp);
 		arxml_rports.put(rPort, rpp);
 	}).build();
@@ -184,10 +189,13 @@ public class BatchModelTransformation {
 	protected BatchTransformationRule<?, ?> providePortAswctRule = batchTransformationRuleFactory.createRule(ProvidePortAswct.instance()).name("PPortAswctRule").action(match -> {
 		Property aswct = match.getUmlProperty();
 		Port pPort = match.getUmlPort();
+		Class provideInterface = match.getUmlInterface();
 		String ppp_name = pPort.getName();
 		AtomicSwComponentType autosarAswct = arxml_aswcts.get(aswct);
+		PortInterface autosarInterface = arxml_interfaces.get(provideInterface);
 		PPortPrototype ppp = ComponentsFactory.eINSTANCE.createPPortPrototype();
 		ppp.setShortName(ppp_name);
+		ppp.setProvidedInterface(autosarInterface);
 		autosarAswct.getPorts().add(ppp);
 		arxml_pports.put(pPort, ppp);
 	}).build();
@@ -195,10 +203,13 @@ public class BatchModelTransformation {
 	protected BatchTransformationRule<?, ?> receivePortCswctRule = batchTransformationRuleFactory.createRule(ReceivePortCswct.instance()).name("RPortCswctRule").action(match -> {
 		Class cswct = match.getUmlClass();
 		Port rPort = match.getUmlPort();
+		Class receiveInterface = match.getUmlInterface();
 		String rpp_name = rPort.getName();
 		CompositionSwComponentType autosarCswct = arxml_cswcts.get(cswct);
+		PortInterface autosarInterface = arxml_interfaces.get(receiveInterface);
 		RPortPrototype rpp = ComponentsFactory.eINSTANCE.createRPortPrototype();
 		rpp.setShortName(rpp_name);
+		rpp.setRequiredInterface(autosarInterface);
 		autosarCswct.getPorts().add(rpp);
 		arxml_rports.put(rPort, rpp);
 	}).build();
@@ -206,10 +217,13 @@ public class BatchModelTransformation {
 	protected BatchTransformationRule<?, ?> providePortCswctRule = batchTransformationRuleFactory.createRule(ProvidePortCswct.instance()).name("PPortCswctRule").action(match -> {
 		Class cswct = match.getUmlClass();
 		Port pPort = match.getUmlPort();
+		Class provideInterface = match.getUmlInterface();
 		String ppp_name = pPort.getName();
 		CompositionSwComponentType autosarCswct = arxml_cswcts.get(cswct);
+		PortInterface autosarInterface = arxml_interfaces.get(provideInterface);
 		PPortPrototype ppp = ComponentsFactory.eINSTANCE.createPPortPrototype();
 		ppp.setShortName(ppp_name);
+		ppp.setProvidedInterface(autosarInterface);
 		autosarCswct.getPorts().add(ppp);
 		arxml_pports.put(pPort, ppp);
 	}).build();
@@ -219,8 +233,10 @@ public class BatchModelTransformation {
 		Property aswct = match.getUmlProperty();
 		String scp_name = "scp_" + scpNum + "_" + aswct.getName();	
 		CompositionSwComponentType autosarCswct = arxml_cswcts.get(cswct);
+		AtomicSwComponentType autosarAswct = arxml_aswcts.get(aswct);
 		SwComponentPrototype autosarScp = CompositionFactory.eINSTANCE.createSwComponentPrototype();
 		autosarScp.setShortName(scp_name);
+		autosarScp.setType(autosarAswct);
 		autosarCswct.getComponents().add(autosarScp);
 		scpNum++;
 		arxml_scps.put(aswct, autosarScp);
@@ -232,12 +248,14 @@ public class BatchModelTransformation {
 		Port aswct__source_rpp = match.getUmlSourcePort();
 		Property aswct_target = match.getUmlTargetProperty();
 		Port aswct_target_ppp = match.getUmlTargetPort();
+		Class cswct = match.getUmlCswctClass();
 		String aswconn_name = flow.getName();
+		CompositionSwComponentType autosarCswct = arxml_cswcts.get(cswct);
 		AtomicSwComponentType autosarAswct = arxml_aswcts.get(aswct_source);
 		AssemblySwConnector autosarAswconn = CompositionFactory.eINSTANCE.createAssemblySwConnector();
 		RPortPrototype rPort = arxml_rports.get(aswct__source_rpp);
 		autosarAswconn.setShortName(aswconn_name);
-		//TODO
+		autosarCswct.getConnectors().add(autosarAswconn);
 		arxml_aswconns.put(flow, autosarAswconn);
 	}).build();
 	
@@ -299,6 +317,34 @@ public class BatchModelTransformation {
 		autosarInstanceRefPPort.setTargetPPort(autosarPort);
 	}).build();
 	
+	protected BatchTransformationRule<?, ?> rAswConnInstanceRefRule = batchTransformationRuleFactory.createRule(RAswConnInstanceRef.instance()).name("rASwConnInstanceRefRule").action(match -> {
+		InformationFlow flow = match.getUmlRAswConn();
+		Property sourceAswct = match.getUmlSourceProperty();
+		Port sourceRPort = match.getUmlSourceRPort();
+		AssemblySwConnector autosarAswconn = arxml_aswconns.get(flow);
+		SwComponentPrototype autosarScp = arxml_scps.get(sourceAswct);
+		AtomicSwComponentType autosarAswct = arxml_aswcts.get(sourceAswct);
+		RPortPrototype autosarPort = arxml_rports.get(sourceRPort);
+		RPortInCompositionInstanceRef autosarInstanceRefRPort = InstancerefsFactory.eINSTANCE.createRPortInCompositionInstanceRef();
+		autosarAswconn.setRequester(autosarInstanceRefRPort);
+		autosarInstanceRefRPort.setContextComponent(autosarScp);
+		autosarInstanceRefRPort.setTargetRPort(autosarPort);
+	}).build();
+	
+	protected BatchTransformationRule<?, ?> pAswConnInstanceRefRule = batchTransformationRuleFactory.createRule(PAswConnInstanceRef.instance()).name("pASwConnInstanceRefRule").action(match -> {
+		InformationFlow flow = match.getUmlPAswConn();
+		Property targetAswct = match.getUmlTargetProperty();
+		Port targetPPort = match.getUmlTargetPPort();
+		AssemblySwConnector autosarAswconn = arxml_aswconns.get(flow);
+		SwComponentPrototype autosarScp = arxml_scps.get(targetAswct);
+		AtomicSwComponentType autosarAswct = arxml_aswcts.get(targetAswct);
+		PPortPrototype autosarPort = arxml_pports.get(targetPPort);
+		PPortInCompositionInstanceRef autosarInstanceRefPPort = InstancerefsFactory.eINSTANCE.createPPortInCompositionInstanceRef();
+		autosarAswconn.setProvider(autosarInstanceRefPPort);
+		autosarInstanceRefPPort.setContextComponent(autosarScp);
+		autosarInstanceRefPPort.setTargetPPort(autosarPort);
+	}).build();
+	
 	
 	public BatchModelTransformation(ResourceSet umlResourceSet, Resource autosarResource) {
 		this.umlResourceSet = umlResourceSet;
@@ -345,6 +391,8 @@ public class BatchModelTransformation {
 		statements.fireAllCurrent(pDelegationSwConnectorRule);
 		statements.fireAllCurrent(rDswConnInstanceRefRule);
 		statements.fireAllCurrent(pDswConnInstanceRefRule);
+		statements.fireAllCurrent(rAswConnInstanceRefRule);
+		statements.fireAllCurrent(pAswConnInstanceRefRule);
 	}
 
 	private void createTransformation() {

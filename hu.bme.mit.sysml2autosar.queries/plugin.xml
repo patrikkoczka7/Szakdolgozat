@@ -22,6 +22,8 @@
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.delegateSwConnectors"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.rDswConnInstanceRef"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.pDswConnInstanceRef"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.rAswConnInstanceRef"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.pAswConnInstanceRef"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.csiOperation"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.sriVariableDataPrototype"/>
     </group>
