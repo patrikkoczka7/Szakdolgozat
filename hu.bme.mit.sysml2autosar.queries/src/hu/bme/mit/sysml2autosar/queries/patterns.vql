@@ -139,7 +139,8 @@ pattern csiOperation(umlCsi: UML::Class, umlOperation: UML::Operation){
 	Class.ownedOperation(umlCsi, umlOperation);
 }
 
-pattern sriVariableDataPrototype(umlSri: UML::Class, umlProperty: UML::Property){
+pattern sriVariableDataPrototype(umlSri: UML::Class, umlProperty: UML::Property, umlAppPrimDataType: UML::DataType){
+	find applicationDataType(umlAppPrimDataType);
 	find senderReceiverInterfaceType(umlSri);
 	Class.ownedAttribute(umlSri, umlProperty);
 	Property.name(umlProperty, _);
