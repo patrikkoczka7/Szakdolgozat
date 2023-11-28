@@ -4,101 +4,146 @@ import "http://www.eclipse.org/uml2/5.0.0/UML" as UML
 import "http://www.eclipse.org/papyrus/sysml/1.6/SysML/Blocks"
 import "http://www.eclipse.org/papyrus/sysml/1.6/SysML/PortsAndFlows"
 
-//Working
 pattern applicationDataType(umlDataType: UML::DataType){
-	DataType(umlDataType);
-	DataType.name(umlDataType, umlName);
-	check(umlName.startsWith("apdt_"));
+	Model.packagedElement(_, umlDataType);
+	ValueType.base_DataType(_, umlDataType);
 }
 
-//Working
 pattern clientServerInterfaceType(umlClass: UML::Class){
+	Model.packagedElement(_, umlClass);
 	InterfaceBlock.base_Class(_, umlClass);
 	Class.ownedOperation(umlClass, _);
 }
 
-//Working
 pattern senderReceiverInterfaceType(umlClass: UML::Class){
+	Model.packagedElement(_, umlClass);
 	InterfaceBlock.base_Class(_, umlClass);
 	Class.ownedAttribute(umlClass, _);
 }
 
-//Working
 pattern atomicSwComponentTypes(umlProperty: UML::Property){
-	Block.base_Class(_, umlClass); // Has <<Block>> Stereotype defined
+	Model.packagedElement(_, umlClass);
+	Block.base_Class(stereotypeApplication, umlClass); 
+	neg InterfaceBlock(stereotypeApplication);
 	Class.ownedAttribute(umlClass, umlProperty);
-	Property.name(umlProperty, umlName);
-	check(umlName.startsWith("aswct_"));
+	Property.name(umlProperty, _);
+	neg Port(umlProperty);
 }
 
-//Working
 pattern compositionSwComponentTypes(umlClass: UML::Class){
-	Block.base_Class(_, umlClass); // Has <<Block>> Stereotype defined
+	Model.packagedElement(_, umlClass);
+	Block.base_Class(stereotypeApplication, umlClass); 
+	neg InterfaceBlock(stereotypeApplication);
 	Class.ownedAttribute(umlClass, umlProperty);
-	Property(umlProperty); //Has any property
-	Class.name(umlClass, umlName);
-	check(umlName.startsWith("cswct_"));
+	find atomicSwComponentTypes(umlProperty); 
+	Class.name(umlClass, _);
 }
 
 pattern swComponentPrototypes(umlClass: UML::Class, umlProperty: UML::Property){
-	Block.base_Class(_, umlClass); // Has <<Block>> Stereotype defined
+	find compositionSwComponentTypes(umlClass);
+	find atomicSwComponentTypes(umlProperty);
 	Class.ownedAttribute(umlClass, umlProperty);
-	Property.ownedElement(umlProperty, umlPort);
-	Port(umlPort);
 }
 
 pattern receivePortAswct(umlProperty: UML::Property, umlPort: UML::Port){
-	find atomicSwComponentTypes(umlProperty);
-	Property.ownedElement(umlProperty, umlPort);
-	InformationFlow.source(umlFlow, umlPort);
-	ItemFlow.base_InformationFlow(_, umlFlow);
+	find assemblySwConnectors(_, umlProperty, umlPort, _, _);
+} or {
+	find rDelegateSwConnectors(_, _, _, umlProperty, umlPort);
 }
 
 pattern providePortAswct(umlProperty: UML::Property, umlPort: UML::Port){
-	find atomicSwComponentTypes(umlProperty);
-	Property.ownedElement(umlProperty, umlPort);
-	InformationFlow.target(umlFlow, umlPort);
-	ItemFlow.base_InformationFlow(_, umlFlow);
+	find assemblySwConnectors(_, _, _,umlProperty, umlPort);
+} or {
+	find pDelegateSwConnectors(_, umlProperty, umlPort, _, _);
 }
 
 pattern receivePortCswct(umlClass: UML::Class, umlPort: UML::Port){
-	find compositionSwComponentTypes(umlClass);
-	Class.ownedElement(umlClass, umlPort);
-	InformationFlow.source(umlFlow, umlPort);
-	ItemFlow.base_InformationFlow(_, umlFlow);
+	find rDelegateSwConnectors(_, umlClass, umlPort, _, _);
 }
 
 pattern providePortCswct(umlClass: UML::Class, umlPort: UML::Port){
-	find compositionSwComponentTypes(umlClass);
-	Class.ownedElement(umlClass, umlPort);
-	InformationFlow.target(umlFlow, umlPort);
-	ItemFlow.base_InformationFlow(_, umlFlow);
+	find pDelegateSwConnectors(_, _, _, umlClass, umlPort);
 }
 
-pattern assemblySwConnectors(umlInfFlow: UML::InformationFlow, umlSourcePort: UML::Port, umlTargetPort: UML::Port){
+pattern assemblySwConnectors(umlInfFlow: UML::InformationFlow, umlSourceProperty: UML::Property, umlSourcePort: UML::Port, umlTargetProperty: UML::Property, umlTargetPort: UML::Port){
+	find atomicSwComponentTypes(umlSourceProperty);
+	find atomicSwComponentTypes(umlTargetProperty);
+	umlSourceProperty != umlTargetProperty;
+	
+	Property.type(umlSourceProperty, umlClass1);
+	Class.ownedAttribute(umlClass1, umlSourcePort);
+	
+	Property.type(umlTargetProperty, umlClass2);
+	Class.ownedAttribute(umlClass2, umlTargetPort);
+	
+	umlSourcePort != umlTargetPort;
+	InformationFlow.informationSource(umlInfFlow, umlSourcePort);
+	InformationFlow.informationTarget(umlInfFlow, umlTargetPort);
 	ItemFlow.base_InformationFlow(_, umlInfFlow);
-	Property.ownedElement(_, umlSourcePort);
-	Property.ownedElement(_, umlTargetPort);
 }
 
-pattern delegateSwConnectors(umlInfFlow: UML::InformationFlow, umlSourcePort: UML::Port, umlTargetPort: UML::Port){
+pattern rDelegateSwConnectors(umlInfFlow: UML::InformationFlow, umlSourceClass: UML::Class, umlSourcePort: UML::Port,umlTargetProperty: UML::Property, umlTargetPort: UML::Port){
+	find compositionSwComponentTypes(umlSourceClass);
+	find atomicSwComponentTypes(umlTargetProperty);
+	
+	Class.ownedAttribute(umlSourceClass, umlSourcePort);
+	
+	Property.type(umlTargetProperty, umlClass2);
+	Class.ownedAttribute(umlClass2, umlTargetPort);
+	
+	umlSourcePort != umlTargetPort;
+	InformationFlow.informationSource(umlInfFlow, umlSourcePort);
+	InformationFlow.informationTarget(umlInfFlow, umlTargetPort);
 	ItemFlow.base_InformationFlow(_, umlInfFlow);
-	Property.ownedElement(_, umlSourcePort);
-	neg Property.ownedElement(_, umlTargetPort);
 }
 
-pattern csiOperation(umlClass: UML::Class){
-	InterfaceBlock.base_Class(_, umlClass);
-	Class.ownedOperation(umlClass, _);
-	Class.ownedOperation.name(umlClass, umlName);
-	check(umlName.startsWith("cso_"));
+pattern pDelegateSwConnectors(umlInfFlow: UML::InformationFlow, umlSourceProperty: UML::Property, umlSourcePort: UML::Port, umlTargetClass: UML::Class, umlTargetPort: UML::Port){
+	find compositionSwComponentTypes(umlTargetClass);
+	find atomicSwComponentTypes(umlSourceProperty);
+	
+	Class.ownedAttribute(umlTargetClass, umlTargetPort);
+	
+	Property.type(umlSourceProperty, umlClass2);
+	Class.ownedAttribute(umlClass2, umlSourcePort);
+	
+	umlSourcePort != umlTargetPort;
+	InformationFlow.informationSource(umlInfFlow, umlSourcePort);
+	InformationFlow.informationTarget(umlInfFlow, umlTargetPort);
+	ItemFlow.base_InformationFlow(_, umlInfFlow);
 }
 
-pattern sriVariableDataPrototype(umlClass: UML::Class){
-	InterfaceBlock.base_Class(_, umlClass);
-	Class.ownedAttribute(umlClass, _);
-	Class.ownedAttribute.name(umlClass, umlName);
-	check(umlName.startsWith("vdp_"));
+pattern delegateSwConnectors(umlInfFlow: UML::InformationFlow, umlOuterPort: UML::Port) {
+	find rDelegateSwConnectors(umlInfFlow, _, umlOuterPort, _, _);
+} or  {
+	find pDelegateSwConnectors(umlInfFlow, _, _, _, umlOuterPort);
+}
+
+pattern rDswConnInstanceRef(umlRDswConn: UML::InformationFlow, umlScp: UML::Property, umlScpRPort: UML::Port){
+	find rDelegateSwConnectors(umlRDswConn, _, _, umlScp, umlScpRPort);
+}
+
+pattern pDswConnInstanceRef(umlPDswConn: UML::InformationFlow, umlScp: UML::Property, umlScpPPort: UML::Port){
+	find pDelegateSwConnectors(umlPDswConn, umlScp, umlScpPPort, _, _);
+}
+
+//pattern rAswConnInstanceRef(umlRAswConn: UML::InformationFlow, umlScp: UML::Property, umlScpRPort: UML::Port){
+//	
+//}
+//
+//pattern pAswConnInstanceRef(umlPAswConn: UML::InformationFlow, umlScp: UML::Property, umlScpPPort: UML::Port){
+//	
+//}
+
+pattern csiOperation(umlCsi: UML::Class, umlOperation: UML::Operation){
+	find clientServerInterfaceType(umlCsi);
+	Class.ownedOperation(umlCsi, umlOperation);
+}
+
+pattern sriVariableDataPrototype(umlSri: UML::Class, umlProperty: UML::Property){
+	find senderReceiverInterfaceType(umlSri);
+	Class.ownedAttribute(umlSri, umlProperty);
+	Property.name(umlProperty, _);
+	neg Port(umlProperty);
 }
 
 

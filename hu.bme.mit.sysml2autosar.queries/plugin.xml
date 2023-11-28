@@ -17,7 +17,11 @@
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.receivePortCswct"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.providePortCswct"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.assemblySwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.rDelegateSwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.pDelegateSwConnectors"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.delegateSwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.rDswConnInstanceRef"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.pDswConnInstanceRef"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.csiOperation"/>
       <query-specification fqn="hu.bme.mit.sysml2autosar.queries.sriVariableDataPrototype"/>
     </group>
