@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><?eclipse version="3.4"?><plugin>
+  <extension id="application" point="org.eclipse.core.runtime.applications">
+    <application cardinality="singleton-global" thread="main" visible="true">
+      <run class="hu.bme.mit.sysml2autosar.cli.Application"/>
+    </application>
+  </extension>
+  <extension id="hu.bme.mit.sysml2autosar.queries.Patterns" point="org.eclipse.viatra.query.runtime.queryspecification">
+    <group group="org.eclipse.viatra.query.runtime.extensibility.SingletonExtensionFactory:hu.bme.mit.sysml2autosar.queries.Patterns" id="hu.bme.mit.sysml2autosar.queries.Patterns">
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.applicationDataType"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.clientServerInterfaceType"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.senderReceiverInterfaceType"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.atomicSwComponentTypes"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.compositionSwComponentTypes"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.swComponentPrototypes"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.receivePortAswct"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.providePortAswct"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.receivePortCswct"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.providePortCswct"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.assemblySwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.rDelegateSwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.pDelegateSwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.delegateSwConnectors"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.rDswConnInstanceRef"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.pDswConnInstanceRef"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.rAswConnInstanceRef"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.pAswConnInstanceRef"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.csiOperation"/>
+      <query-specification fqn="hu.bme.mit.sysml2autosar.queries.sriVariableDataPrototype"/>
+    </group>
+  </extension>
+</plugin>

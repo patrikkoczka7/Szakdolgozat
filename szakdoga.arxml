@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_00051.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE S="" UUID="1bef7843-e0f9-4fa3-b3db-d72f9a7d7229">
+      <SHORT-NAME>ARRoot</SHORT-NAME>
+      <CATEGORY></CATEGORY>
+      <SHORT-NAME-PATTERN></SHORT-NAME-PATTERN>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>ApplicationDataType</SHORT-NAME>
+          <ELEMENTS>
+            <APPLICATION-PRIMITIVE-DATA-TYPE>
+              <SHORT-NAME>apdt_direction_indicator_flashes</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+            </APPLICATION-PRIMITIVE-DATA-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>SwComponents</SHORT-NAME>
+          <AR-PACKAGES>
+            <AR-PACKAGE>
+              <SHORT-NAME>PortInterfaces</SHORT-NAME>
+              <ELEMENTS>
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>csi_direction_indicator_control</SHORT-NAME>
+                  <OPERATIONS>
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>cso_turn_off</SHORT-NAME>
+                    </CLIENT-SERVER-OPERATION>
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>cso_turn_on</SHORT-NAME>
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+                </CLIENT-SERVER-INTERFACE>
+                <SENDER-RECEIVER-INTERFACE>
+                  <SHORT-NAME>sri_direction_indicator_turned_on</SHORT-NAME>
+                  <CATEGORY></CATEGORY>
+                  <DATA-ELEMENTS>
+                    <VARIABLE-DATA-PROTOTYPE>
+                      <SHORT-NAME>vdp_indicator_flashes</SHORT-NAME>
+                      <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/ARRoot/ApplicationDataType/apdt_direction_indicator_flashes</TYPE-TREF>
+                    </VARIABLE-DATA-PROTOTYPE>
+                  </DATA-ELEMENTS>
+                </SENDER-RECEIVER-INTERFACE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE>
+              <SHORT-NAME>SwComponentTypes</SHORT-NAME>
+              <AR-PACKAGES>
+                <AR-PACKAGE>
+                  <SHORT-NAME>AtomicSwComponentTypes</SHORT-NAME>
+                  <ELEMENTS>
+                    <APPLICATION-SW-COMPONENT-TYPE>
+                      <SHORT-NAME>aswct_direction_actuator</SHORT-NAME>
+                      <PORTS>
+                        <P-PORT-PROTOTYPE>
+                          <SHORT-NAME>ppp_direction_actuator</SHORT-NAME>
+                          <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/ARRoot/SwComponents/PortInterfaces/csi_direction_indicator_control</PROVIDED-INTERFACE-TREF>
+                        </P-PORT-PROTOTYPE>
+                      </PORTS>
+                    </APPLICATION-SW-COMPONENT-TYPE>
+                    <APPLICATION-SW-COMPONENT-TYPE>
+                      <SHORT-NAME>aswct_direction_sensor</SHORT-NAME>
+                      <PORTS>
+                        <P-PORT-PROTOTYPE UUID="">
+                          <SHORT-NAME>ppp_left_direction</SHORT-NAME>
+                          <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ARRoot/SwComponents/PortInterfaces/sri_direction_indicator_turned_on</PROVIDED-INTERFACE-TREF>
+                        </P-PORT-PROTOTYPE>
+                        <P-PORT-PROTOTYPE>
+                          <SHORT-NAME>ppp_right_direction</SHORT-NAME>
+                          <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ARRoot/SwComponents/PortInterfaces/sri_direction_indicator_turned_on</PROVIDED-INTERFACE-TREF>
+                        </P-PORT-PROTOTYPE>
+                      </PORTS>
+                    </APPLICATION-SW-COMPONENT-TYPE>
+                    <APPLICATION-SW-COMPONENT-TYPE S="">
+                      <SHORT-NAME>aswct_sensor</SHORT-NAME>
+                      <PORTS>
+                        <R-PORT-PROTOTYPE>
+                          <SHORT-NAME>rpp_direction_sensor</SHORT-NAME>
+                          <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ARRoot/SwComponents/PortInterfaces/sri_direction_indicator_turned_on</REQUIRED-INTERFACE-TREF>
+                        </R-PORT-PROTOTYPE>
+                        <R-PORT-PROTOTYPE>
+                          <SHORT-NAME>rpp_direction_sensor_actuator</SHORT-NAME>
+                          <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/ARRoot/SwComponents/PortInterfaces/csi_direction_indicator_control</REQUIRED-INTERFACE-TREF>
+                        </R-PORT-PROTOTYPE>
+                      </PORTS>
+                    </APPLICATION-SW-COMPONENT-TYPE>
+                  </ELEMENTS>
+                </AR-PACKAGE>
+                <AR-PACKAGE>
+                  <SHORT-NAME>CompositionSwComponentTypes</SHORT-NAME>
+                  <SHORT-NAME-PATTERN></SHORT-NAME-PATTERN>
+                  <ELEMENTS>
+                    <COMPOSITION-SW-COMPONENT-TYPE>
+                      <SHORT-NAME>cswct_controller</SHORT-NAME>
+                      <PORTS>
+                        <P-PORT-PROTOTYPE>
+                          <SHORT-NAME>ppp_left_direction</SHORT-NAME>
+                          <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ARRoot/SwComponents/PortInterfaces/sri_direction_indicator_turned_on</PROVIDED-INTERFACE-TREF>
+                        </P-PORT-PROTOTYPE>
+                        <P-PORT-PROTOTYPE>
+                          <SHORT-NAME>ppp_right_direction</SHORT-NAME>
+                          <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ARRoot/SwComponents/PortInterfaces/sri_direction_indicator_turned_on</PROVIDED-INTERFACE-TREF>
+                        </P-PORT-PROTOTYPE>
+                      </PORTS>
+                      <COMPONENTS>
+                        <SW-COMPONENT-PROTOTYPE>
+                          <SHORT-NAME>scp_direction_sensor</SHORT-NAME>
+                          <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/ARRoot/SwComponents/SwComponentTypes/AtomicSwComponentTypes/aswct_direction_sensor</TYPE-TREF>
+                        </SW-COMPONENT-PROTOTYPE>
+                      </COMPONENTS>
+                      <CONNECTORS>
+                        <DELEGATION-SW-CONNECTOR>
+                          <SHORT-NAME>dswconn_left_direction</SHORT-NAME>
+                          <INNER-PORT-IREF>
+                            <P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                              <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_controller/scp_direction_sensor</CONTEXT-COMPONENT-REF>
+                              <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/AtomicSwComponentTypes/aswct_direction_sensor/ppp_left_direction</TARGET-P-PORT-REF>
+                            </P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                          </INNER-PORT-IREF>
+                          <OUTER-PORT-REF DEST="P-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_controller/ppp_left_direction</OUTER-PORT-REF>
+                        </DELEGATION-SW-CONNECTOR>
+                        <DELEGATION-SW-CONNECTOR>
+                          <SHORT-NAME>dswconn_right_direction</SHORT-NAME>
+                          <INNER-PORT-IREF>
+                            <P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                              <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_controller/scp_direction_sensor</CONTEXT-COMPONENT-REF>
+                              <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/AtomicSwComponentTypes/aswct_direction_sensor/ppp_right_direction</TARGET-P-PORT-REF>
+                            </P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                          </INNER-PORT-IREF>
+                          <OUTER-PORT-REF DEST="P-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_controller/ppp_right_direction</OUTER-PORT-REF>
+                        </DELEGATION-SW-CONNECTOR>
+                      </CONNECTORS>
+                    </COMPOSITION-SW-COMPONENT-TYPE>
+                    <COMPOSITION-SW-COMPONENT-TYPE>
+                      <SHORT-NAME>cswct_direction_indicator</SHORT-NAME>
+                      <PORTS>
+                        <R-PORT-PROTOTYPE UUID="">
+                          <SHORT-NAME>rpp_direction_sensor</SHORT-NAME>
+                          <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ARRoot/SwComponents/PortInterfaces/sri_direction_indicator_turned_on</REQUIRED-INTERFACE-TREF>
+                        </R-PORT-PROTOTYPE>
+                      </PORTS>
+                      <COMPONENTS>
+                        <SW-COMPONENT-PROTOTYPE>
+                          <SHORT-NAME>scp_direction_actuator</SHORT-NAME>
+                          <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/ARRoot/SwComponents/SwComponentTypes/AtomicSwComponentTypes/aswct_direction_actuator</TYPE-TREF>
+                        </SW-COMPONENT-PROTOTYPE>
+                        <SW-COMPONENT-PROTOTYPE>
+                          <SHORT-NAME>scp_sensor</SHORT-NAME>
+                          <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/ARRoot/SwComponents/SwComponentTypes/AtomicSwComponentTypes/aswct_sensor</TYPE-TREF>
+                        </SW-COMPONENT-PROTOTYPE>
+                      </COMPONENTS>
+                      <CONNECTORS>
+                        <ASSEMBLY-SW-CONNECTOR>
+                          <SHORT-NAME>aswconn_direction_sensor_actuator</SHORT-NAME>
+                          <PROVIDER-IREF>
+                            <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator/scp_direction_actuator</CONTEXT-COMPONENT-REF>
+                            <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/AtomicSwComponentTypes/aswct_direction_actuator/ppp_direction_actuator</TARGET-P-PORT-REF>
+                          </PROVIDER-IREF>
+                          <REQUESTER-IREF>
+                            <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator/scp_sensor</CONTEXT-COMPONENT-REF>
+                            <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/AtomicSwComponentTypes/aswct_sensor/rpp_direction_sensor_actuator</TARGET-R-PORT-REF>
+                          </REQUESTER-IREF>
+                        </ASSEMBLY-SW-CONNECTOR>
+                        <DELEGATION-SW-CONNECTOR>
+                          <SHORT-NAME>dswconn_direction_sensor</SHORT-NAME>
+                          <INNER-PORT-IREF>
+                            <R-PORT-IN-COMPOSITION-INSTANCE-REF>
+                              <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator/scp_sensor</CONTEXT-COMPONENT-REF>
+                              <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/AtomicSwComponentTypes/aswct_sensor/rpp_direction_sensor</TARGET-R-PORT-REF>
+                            </R-PORT-IN-COMPOSITION-INSTANCE-REF>
+                          </INNER-PORT-IREF>
+                          <OUTER-PORT-REF DEST="R-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator/rpp_direction_sensor</OUTER-PORT-REF>
+                        </DELEGATION-SW-CONNECTOR>
+                      </CONNECTORS>
+                    </COMPOSITION-SW-COMPONENT-TYPE>
+                    <COMPOSITION-SW-COMPONENT-TYPE>
+                      <SHORT-NAME>cswct_direction_indicator_root_sw</SHORT-NAME>
+                      <COMPONENTS>
+                        <SW-COMPONENT-PROTOTYPE>
+                          <SHORT-NAME>scp_controller</SHORT-NAME>
+                          <TYPE-TREF DEST="COMPOSITION-SW-COMPONENT-TYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_controller</TYPE-TREF>
+                        </SW-COMPONENT-PROTOTYPE>
+                        <SW-COMPONENT-PROTOTYPE>
+                          <SHORT-NAME>scp_direction_indicator_left</SHORT-NAME>
+                          <TYPE-TREF DEST="COMPOSITION-SW-COMPONENT-TYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator</TYPE-TREF>
+                        </SW-COMPONENT-PROTOTYPE>
+                        <SW-COMPONENT-PROTOTYPE>
+                          <SHORT-NAME>scp_direction_indicator_right</SHORT-NAME>
+                          <TYPE-TREF DEST="COMPOSITION-SW-COMPONENT-TYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator</TYPE-TREF>
+                        </SW-COMPONENT-PROTOTYPE>
+                      </COMPONENTS>
+                      <CONNECTORS>
+                        <ASSEMBLY-SW-CONNECTOR>
+                          <SHORT-NAME>aswconn_direction_indicator_left</SHORT-NAME>
+                          <PROVIDER-IREF>
+                            <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator_root_sw/scp_controller</CONTEXT-COMPONENT-REF>
+                            <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_controller/ppp_left_direction</TARGET-P-PORT-REF>
+                          </PROVIDER-IREF>
+                          <REQUESTER-IREF>
+                            <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator_root_sw/scp_direction_indicator_left</CONTEXT-COMPONENT-REF>
+                            <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator/rpp_direction_sensor</TARGET-R-PORT-REF>
+                          </REQUESTER-IREF>
+                        </ASSEMBLY-SW-CONNECTOR>
+                        <ASSEMBLY-SW-CONNECTOR>
+                          <SHORT-NAME>aswconn_direction_indicator_right</SHORT-NAME>
+                          <PROVIDER-IREF>
+                            <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator_root_sw/scp_controller</CONTEXT-COMPONENT-REF>
+                            <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_controller/ppp_right_direction</TARGET-P-PORT-REF>
+                          </PROVIDER-IREF>
+                          <REQUESTER-IREF>
+                            <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator_root_sw/scp_direction_indicator_right</CONTEXT-COMPONENT-REF>
+                            <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/ARRoot/SwComponents/SwComponentTypes/CompositionSwComponentTypes/cswct_direction_indicator/rpp_direction_sensor</TARGET-R-PORT-REF>
+                          </REQUESTER-IREF>
+                        </ASSEMBLY-SW-CONNECTOR>
+                      </CONNECTORS>
+                    </COMPOSITION-SW-COMPONENT-TYPE>
+                  </ELEMENTS>
+                </AR-PACKAGE>
+              </AR-PACKAGES>
+            </AR-PACKAGE>
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>
